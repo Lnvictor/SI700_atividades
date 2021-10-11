@@ -28,107 +28,129 @@ class RegisterScreen extends StatelessWidget {
               appBar: AppBar(title: Text("Registrar")),
               body: Form(
                 key: formkey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      decoration: InputDecoration(hintText: "Nome"),
-                      validator: (String? inValue) {
-                        if (inValue!.length == 0) {
-                          return "Insira algo como nome";
-                        }
-                        return null;
-                      },
-                      onSaved: (String? inValue) {
-                        name = inValue!;
-                      },
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          decoration: InputDecoration(
+                              labelText: "Nome", border: OutlineInputBorder()),
+                          validator: (String? inValue) {
+                            if (inValue!.length == 0) {
+                              return "Insira algo como nome";
+                            }
+                            return null;
+                          },
+                          onSaved: (String? inValue) {
+                            name = inValue!;
+                          },
+                        ),
+                        SizedBox(height: 5),
+                        TextFormField(
+                          decoration: InputDecoration(
+                              labelText: "Sobrenome",
+                              border: OutlineInputBorder()),
+                          validator: (String? inValue) {
+                            if (inValue!.length == 0) {
+                              return "Insira algo como sobrenome";
+                            }
+                            return null;
+                          },
+                          onSaved: (String? inValue) {
+                            lastName = inValue;
+                          },
+                        ),
+                        SizedBox(height: 5),
+                        TextFormField(
+                          decoration: InputDecoration(
+                              labelText: "Email", border: OutlineInputBorder()),
+                          validator: (String? inValue) {
+                            if (inValue!.length < 4) {
+                              return "Digite algo como email";
+                            }
+                            return null;
+                          },
+                          onSaved: (String? inValue) {
+                            email = inValue!;
+                          },
+                        ),
+                        SizedBox(height: 5),
+                        DropdownButton<String>(
+                          hint: Text("Selecione o Seu time"),
+                          value: team,
+                          items: <String>['Sao Paulo', 'Curintia']
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (dynamic value) {
+                            team = value;
+                            BlocProvider.of<RegisterBloc>(context)
+                                .add(ChangeOnDropDownMenu());
+                          },
+                        ),
+                        SizedBox(height: 5),
+                        TextFormField(
+                          decoration: InputDecoration(
+                              labelText: "Data de nascimento",
+                              border: OutlineInputBorder()),
+                          onSaved: (String? inValue) {
+                            birthday = inValue;
+                          },
+                        ),
+                        SizedBox(height: 5),
+                        TextFormField(
+                          decoration: InputDecoration(
+                              labelText: "Cidade",
+                              border: OutlineInputBorder()),
+                          onSaved: (String? inValue) {
+                            city = inValue;
+                          },
+                        ),
+                        SizedBox(height: 5),
+                        TextFormField(
+                          decoration: InputDecoration(
+                              labelText: "Estado",
+                              border: OutlineInputBorder()),
+                          onSaved: (String? inValue) {
+                            rgState = inValue;
+                          },
+                        ),
+                        SizedBox(height: 5),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (formkey.currentState!.validate()) {
+                              formkey.currentState!.save();
+                              // Lançando evento
+                              BlocProvider.of<RegisterBloc>(context).add(
+                                  MakeRegister(
+                                      name: name,
+                                      lastName: lastName,
+                                      email: email,
+                                      team: team,
+                                      birthday: birthday,
+                                      city: city,
+                                      state: rgState));
+                            }
+                          },
+                          child: Text("Registrar"),
+                        ),
+                      ],
                     ),
-                    TextFormField(
-                      decoration: InputDecoration(hintText: "Sobrenome"),
-                      validator: (String? inValue) {
-                        if (inValue!.length == 0) {
-                          return "Insira algo como sobrenome";
-                        }
-                        return null;
-                      },
-                      onSaved: (String? inValue) {
-                        lastName = inValue;
-                      },
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(hintText: "Email"),
-                      validator: (String? inValue) {
-                        if (inValue!.length < 4) {
-                          return "Digite algo como email";
-                        }
-                        return null;
-                      },
-                      onSaved: (String? inValue) {
-                        email = inValue!;
-                      },
-                    ),
-                    DropdownButton<String>(
-                      value: team,
-                      items: <String>['Sao Paulo', 'Curintia']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (dynamic value) {
-                        team = value;
-                        BlocProvider.of<RegisterBloc>(context)
-                            .add(ChangeOnDropDownMenu());
-                      },
-                    ),
-                    TextFormField(
-                      decoration:
-                          InputDecoration(hintText: "Data de nascimento"),
-                      onSaved: (String? inValue) {
-                        birthday = inValue;
-                      },
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(hintText: "Cidade"),
-                      onSaved: (String? inValue) {
-                        city = inValue;
-                      },
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(hintText: "Estado"),
-                      onSaved: (String? inValue) {
-                        rgState = inValue;
-                      },
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (formkey.currentState!.validate()) {
-                          formkey.currentState!.save();
-                          // Lançando evento
-                          BlocProvider.of<RegisterBloc>(context).add(
-                              MakeRegister(
-                                  name: name,
-                                  lastName: lastName,
-                                  email: email,
-                                  team: team,
-                                  birthday: birthday,
-                                  city: city,
-                                  state: rgState));
-                        }
-                      },
-                      child: Text("Submit"),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             );
 
             if (state is Invalid) {
               Fluttertoast.showToast(
-                msg: "Email Duplicado",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-              );
+                  msg: "Email Duplicado",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  webBgColor: "#eb3434");
             }
 
             return screen;

@@ -24,9 +24,8 @@ class CopaBrasilScreen extends StatelessWidget {
           body: () {
             if (state is Fixture) {
               return InitialFases();
-            } else {
-              return FinalFases();
             }
+            return FinalFases();
           }(),
           bottomNavigationBar: BottomNavigationBar(
             items: [

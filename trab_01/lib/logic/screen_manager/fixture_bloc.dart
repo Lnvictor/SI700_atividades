@@ -7,7 +7,6 @@ class FixtureBloc extends Bloc<FixtureEvent, FixtureState> {
 
   @override
   Stream<FixtureState> mapEventToState(FixtureEvent event) async* {
-    print(event);
     if (event is ClickOnFixture) {
       yield DeitailedView();
     } else

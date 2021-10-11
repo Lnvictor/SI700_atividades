@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:trab_01/logic/auth/register_event.dart';
