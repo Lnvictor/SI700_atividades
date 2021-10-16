@@ -1,36 +1,39 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trab_01/logic/auth/auth_bloc.dart';
+import 'package:trab_01/logic/auth/auth_event.dart';
 import 'package:trab_01/logic/auth/register_bloc.dart';
 import 'package:trab_01/logic/auth/register_event.dart';
 import 'package:trab_01/logic/auth/register_state.dart';
+import 'package:trab_01/logic/user/user_bloc.dart';
+import 'package:trab_01/logic/user/user_event.dart';
+import 'package:trab_01/logic/user/user_state.dart';
+import 'package:trab_01/main.dart';
 import 'package:trab_01/model/user.dart';
 import 'package:trab_01/view/screens/auth/login_screen.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:trab_01/view/screens/core/home.dart';
 
-class RegisterScreen extends StatelessWidget {
+class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    GlobalKey<FormState> formkey = new GlobalKey();
-    String? name;
-    String? lastName;
-    String? email;
-    String? team;
-    String? birthday;
-    String? city;
-    String? rgState;
-    String? password;
+    GlobalKey<FormState> formProfileKey = new GlobalKey();
+    String? name = user.name;
+    String? lastName = user.lastName;
+    String? email = user.email;
+    String? team = user.team;
+    String? birthday = user.birthday;
+    String? city = user.city;
+    String? rgState = user.rgState;
+    String? password = user.password;
 
-    return BlocProvider<RegisterBloc>(
-        create: (context) => RegisterBloc(),
-        child:
-            BlocBuilder<RegisterBloc, RegisterState>(builder: (context, state) {
-          if (!(state is Valid)) {
-            User? user = User();
-            var screen = Scaffold(
-              appBar: AppBar(title: Text("Registrar")),
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state){
+        return Scaffold(
+              appBar: AppBar(title: Text("Perfil")),
               body: Form(
-                key: formkey,
+                key: formProfileKey,
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: SingleChildScrollView(
@@ -39,6 +42,7 @@ class RegisterScreen extends StatelessWidget {
                         TextFormField(
                           decoration: InputDecoration(
                               labelText: "Nome", border: OutlineInputBorder()),
+                              initialValue: user.name,
                           validator: (String? inValue) {
                             if (inValue!.length == 0) {
                               return "Insira algo como nome";
@@ -54,6 +58,7 @@ class RegisterScreen extends StatelessWidget {
                           decoration: InputDecoration(
                               labelText: "Sobrenome",
                               border: OutlineInputBorder()),
+                            initialValue: user.lastName,
                           validator: (String? inValue) {
                             if (inValue!.length == 0) {
                               return "Insira algo como sobrenome";
@@ -68,6 +73,7 @@ class RegisterScreen extends StatelessWidget {
                         TextFormField(
                           decoration: InputDecoration(
                               labelText: "Email", border: OutlineInputBorder()),
+                              initialValue: user.email,
                           validator: (String? inValue) {
                             if (inValue!.length < 4) {
                               return "Digite algo como email";
@@ -81,7 +87,7 @@ class RegisterScreen extends StatelessWidget {
                         SizedBox(height: 5),
                         DropdownButton<String>(
                           hint: Text("Selecione o Seu time"),
-                          value: team,
+                          value: user.team,
                           items: <String>['Sao Paulo', 'Curintia']
                               .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
@@ -100,6 +106,7 @@ class RegisterScreen extends StatelessWidget {
                           decoration: InputDecoration(
                               labelText: "Data de nascimento",
                               border: OutlineInputBorder()),
+                              initialValue: user.birthday,
                           onSaved: (String? inValue) {
                             birthday = inValue;
                           },
@@ -109,6 +116,7 @@ class RegisterScreen extends StatelessWidget {
                           decoration: InputDecoration(
                               labelText: "Cidade",
                               border: OutlineInputBorder()),
+                              initialValue: user.city,
                           onSaved: (String? inValue) {
                             city = inValue;
                           },
@@ -118,6 +126,7 @@ class RegisterScreen extends StatelessWidget {
                           decoration: InputDecoration(
                               labelText: "Estado",
                               border: OutlineInputBorder()),
+                              initialValue: user.rgState,
                           onSaved: (String? inValue) {
                             rgState = inValue;
                           },
@@ -125,6 +134,7 @@ class RegisterScreen extends StatelessWidget {
                         TextFormField(
                           decoration: InputDecoration(
                               labelText: "Senha", border: OutlineInputBorder()),
+                            initialValue: user.password,
                           onSaved: (String? inValue) {
                             password = inValue;
                           },
@@ -132,23 +142,37 @@ class RegisterScreen extends StatelessWidget {
                         SizedBox(height: 5),
                         ElevatedButton(
                           onPressed: () {
-                            if (formkey.currentState!.validate()) {
-                              formkey.currentState!.save();
-                              user.name = name!;
-                              user.lastName = lastName!;
-                              user.email = email!;
-                              user.birthday = birthday!;
-                              user.rgState = rgState!;
-                              user.team = team!;
-                              user.city = city!;
-                              user.password = password!;
-
-                              // Lançando evento
-                              BlocProvider.of<RegisterBloc>(context)
-                                  .add(MakeRegister(user: user));
+                            if (formProfileKey.currentState!.validate()) {
+                              formProfileKey.currentState!.save();
+                              user.name = name;
+                              user.lastName = lastName;
+                              user.email = email;
+                              user.birthday = birthday;
+                              user.rgState = rgState;
+                              user.team = team;
+                              user.city = city;
+                              user.password = password;
+                              BlocProvider.of<UserBloc>(context).add(UpdateUser(userId, user));
+                              Navigator.pop(context);
+                              Navigator.push(context, MaterialPageRoute(builder: (_) {
+                                return HomeScreen();
+                              }
+                              ));
                             }
                           },
-                          child: Text("Registrar"),
+                          child: Text("Salvar"),
+                        ),
+                        ElevatedButton(
+                          onPressed: (){
+                              BlocProvider.of<UserBloc>(context).add(DeleteUser(userId));
+                              Navigator.pop(context);
+                              Navigator.push(context, MaterialPageRoute(builder: (_) {
+                                return MyApp();
+                              }
+                              ));
+                          },  
+                          style: ElevatedButton.styleFrom(primary: Colors.red),
+                          child: Text("Apagar Conta"),
                         ),
                       ],
                     ),
@@ -156,19 +180,6 @@ class RegisterScreen extends StatelessWidget {
                 ),
               ),
             );
-
-            if (state is Invalid) {
-              Fluttertoast.showToast(
-                  msg: "Email Duplicado",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
-                  webBgColor: "#eb3434");
-            }
-
-            return screen;
-          } else {
-            return LoginScreen();
-          }
-        }));
+      });
   }
 }

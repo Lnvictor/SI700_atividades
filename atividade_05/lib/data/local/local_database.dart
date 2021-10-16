@@ -31,6 +31,8 @@ class DatabaseLocalServer {
     return _database;
   }
 
+  get stream => null;
+
   Future<Database> initializeDatabase() async {
     Directory directory = await getApplicationDocumentsDirectory();
     String path = directory.path + "trab01.db";
@@ -56,7 +58,7 @@ class DatabaseLocalServer {
   Future<int> insertUser(User? user) async {
     Database? db = await this.database;
 
-    if (db != null) return db.insert(userTable, user!.toMap());
+    if (db != null && user != null) return db.insert(userTable, user.toMap());
     return -1;
   }
 
@@ -78,13 +80,12 @@ class DatabaseLocalServer {
     return -1;
   }
 
-  Future<List<User?>> getNoteList() async {
+  Future<List<User>> getUserList() async {
     Database? db = await this.database;
     if (db != null) {
-      List<User?> userList = [];
+      List<User> userList = [];
       List<Map<String, Object?>> userMapList =
           await db.rawQuery("SELECT * FROM $userTable;");
-
       for (int i = 0; i < userMapList.length; i++) {
         User user = User.fromMap(userMapList[i]);
 

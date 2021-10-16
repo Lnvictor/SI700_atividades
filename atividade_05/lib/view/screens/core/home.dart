@@ -8,7 +8,10 @@ import 'package:trab_01/logic/auth/register_bloc.dart';
 import 'package:trab_01/logic/auth/register_event.dart';
 import 'package:trab_01/logic/auth/register_state.dart';
 import 'package:trab_01/logic/screen_manager/bottom_nav_bloc.dart';
+import 'package:trab_01/logic/user/user_bloc.dart';
 import 'package:trab_01/view/screens/auth/login_screen.dart';
+import 'package:trab_01/view/screens/auth/register_screen.dart';
+import 'package:trab_01/view/screens/core/profile_screen.dart';
 
 import 'brasileirao_screen.dart';
 import 'copa_br.dart';
@@ -45,7 +48,7 @@ class HomeScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(
-                        "Seja Bem-Vindo ${username2}",
+                        "Seja Bem-Vindo ${user.name}",
                         textAlign: TextAlign.center,
                         style:
                             TextStyle(fontSize: 20, color: Colors.blueAccent),
@@ -117,6 +120,16 @@ class HomeScreen extends StatelessWidget {
                           return CopaBrasilScreen();
                         }));
                       },
+                    ),
+                    ListTile(
+                      title: Text("Perfil"),
+                      onTap: (){
+                        Navigator.pop(context);
+                        Navigator.push(context, MaterialPageRoute(builder: (_) {
+                          return BlocProvider<UserBloc>(create: (context) => UserBloc(),
+                          child: ProfileScreen());
+                        }));
+                      }
                     ),
                     ListTile(
                       title: Text("Sair"),

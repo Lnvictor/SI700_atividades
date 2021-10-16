@@ -1,4 +1,5 @@
 class User {
+  int _id = -1;
   String _name = "";
   String _lastName = "";
   String _email = "";
@@ -9,6 +10,7 @@ class User {
   String _password = "";
 
   User() {
+    _id = -1;
     _name = "";
     _lastName = "";
     _email = "";
@@ -20,16 +22,18 @@ class User {
   }
 
   User.fromMap(map) {
+    this._id = map["id"];
     this._name = map["name"];
-    this._lastName = map["lastName"];
+    this._lastName = map["last_name"];
     this._email = map["email"];
     this._team = map["team"];
     this._birthday = map["birthday"];
     this._city = map["city"];
-    this._rgState = map["rgState"];
+    this._rgState = map["state"];
     this._password = map["password"];
   }
 
+  int get id => _id;
   String get name => _name;
   String get lastName => _lastName;
   String get email => _email;
@@ -38,6 +42,10 @@ class User {
   String get city => _city;
   String get rgState => _rgState;
   String get password => _password;
+
+  set id(int id){
+    this._id = id;
+  }
 
   set name(String name) {
     this._name = name;
@@ -74,12 +82,12 @@ class User {
   toMap() {
     var map = Map<String, dynamic>();
     map["name"] = _name;
-    map["lastName"] = _lastName;
+    map["last_name"] = _lastName;
     map["email"] = _email;
     map["team"] = _team;
     map["birthday"] = _birthday;
     map["city"] = _city;
-    map["rgState"] = _rgState;
+    map["state"] = _rgState;
     map["password"] = _password;
     return map;
   }

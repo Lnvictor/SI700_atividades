@@ -12,7 +12,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     if (event is MakeRegister) {
       DatabaseLocalServer.helper.insertUser(event.user);
       yield Valid();
-    } else {
+    }
+    else {
       yield Neutral();
     }
   }

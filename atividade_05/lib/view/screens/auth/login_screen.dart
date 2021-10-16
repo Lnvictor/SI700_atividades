@@ -9,6 +9,8 @@ import 'package:trab_01/view/screens/auth/register_screen.dart';
 import 'package:trab_01/view/screens/core/home.dart';
 
 var username2;
+var userId;
+var user;
 
 class LoginScreen extends StatelessWidget {
   @override
@@ -97,9 +99,10 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
             );
-          } else {
-            return HomeScreen();
+          } else if (state is Authenticated) {
+            userId = state.userId;
           }
+          return HomeScreen();
         }));
   }
 }
